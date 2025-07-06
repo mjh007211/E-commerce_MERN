@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes";
-import { seedInitialPorducts } from "./modles/services/productServices";
+import { seedInitialPorducts } from "./services/productServices";
+import productRouters from "./routes/productRouters";
 
 const app = express();
 const port = 3001;
@@ -16,6 +17,7 @@ mongoose
 seedInitialPorducts();
 
 app.use("/user", userRoutes);
+app.use("/product", productRouters);
 
 app.listen(port, () => {
   console.log(`running at port ${port}`);

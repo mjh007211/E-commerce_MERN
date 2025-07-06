@@ -1,5 +1,5 @@
 import express from "express";
-import { login, signUp } from "../modles/services/usersServices";
+import { login, signUp } from "../services/usersServices";
 
 const router = express.Router();
 

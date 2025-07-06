@@ -1,4 +1,4 @@
-import { userModel } from "../userModel";
+import { userModel } from "../models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -39,7 +39,7 @@ export const signUp = async ({
     password: hashPassword,
   });
 
-  newUser.save();
+  await newUser.save();
 
   return { data: generateJWT({ firstName, lastName, email }), statusCode: 200 };
 };
