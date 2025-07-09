@@ -1,7 +1,11 @@
 import { cartModel } from "../models/cartModel";
 import { productModel } from "../models/productModel";
+import { calculateExistingProductTotal } from "../utils/calculateExistingProductTotal";
 
 interface CreateUserCart {
+  userID: string;
+}
+interface DeleteUserCart {
   userID: string;
 }
 
@@ -21,6 +25,11 @@ interface UpdateProductInCart {
   productQuantity: number;
 }
 
+interface DeleteProductInCart {
+  userID: string;
+  productID: any;
+}
+
 const createUserCart = async ({ userID }: CreateUserCart) => {
   const userCart = await cartModel.create({ userID, totalAmount: 0 });
   await userCart.save();
@@ -37,6 +46,16 @@ export const getActiveCartForUser = async ({
   }
 
   return userCart;
+};
+
+export const clearCart = async ({ userID }: DeleteUserCart) => {
+  const userCart = await getActiveCartForUser({ userID });
+  userCart.items = [];
+  userCart.totalAmount = 0;
+
+  const saveUserCart = await userCart.save();
+
+  return { data: userCart, statusCode: 200 };
 };
 
 export const addItemToCart = async ({
@@ -106,13 +125,42 @@ export const updateProductInCart = async ({
     (productObject) => productObject.product.toString() !== productID
   );
 
-  let total = otherExistingProduct.reduce((sum, product) => {
-    sum += product.productQuantity * product.productPrice;
-    return sum;
-  }, 0);
+  let total = calculateExistingProductTotal({
+    cartItems: otherExistingProduct,
+  });
 
   existsInCart.productQuantity = productQuantity;
   total += existsInCart.productQuantity * existsInCart.productPrice;
+
+  userCart.totalAmount = total;
+
+  const saveUserCart = await userCart.save();
+  return { data: userCart, statusCode: 200 };
+};
+
+export const deleteProductInCart = async ({
+  userID,
+  productID,
+}: DeleteProductInCart) => {
+  const userCart = await getActiveCartForUser({ userID });
+
+  const existsInCart = userCart.items.find(
+    (productObject) => productObject.product.toString() === productID
+  );
+
+  if (!existsInCart) {
+    return { data: "the product not existed in cart", statusCode: 400 };
+  }
+
+  const otherExistingProduct = userCart.items.filter(
+    (productObject) => productObject.product.toString() !== productID
+  );
+
+  const total = calculateExistingProductTotal({
+    cartItems: otherExistingProduct,
+  });
+
+  userCart.items = otherExistingProduct;
 
   userCart.totalAmount = total;
 
