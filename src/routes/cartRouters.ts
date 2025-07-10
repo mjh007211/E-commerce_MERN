@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import {
   addItemToCart,
+  checkout,
   clearCart,
   deleteProductInCart,
   getActiveCartForUser,
@@ -54,5 +55,12 @@ router.delete(
     res.status(response.statusCode).send(response.data);
   }
 );
+
+router.post("/checkout", validateJWT, async (req: ExtendRequst, res) => {
+  const userID = req.user._id;
+  const { address } = req.body;
+  const response = await checkout({ userID, address });
+  res.status(response.statusCode).send(response.data);
+});
 
 export default router;
