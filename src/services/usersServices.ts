@@ -15,7 +15,7 @@ interface Logindata {
 }
 
 const generateJWT = (data: any) => {
-  return jwt.sign(data, "ToxCb8KHc6ASeVAKjVmMCzt7MZnr9UiT");
+  return jwt.sign(data, process.env.JWT_SECRET_KEY || "");
 };
 
 export const signUp = async ({

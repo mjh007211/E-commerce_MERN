@@ -22,30 +22,26 @@ export const validateJWT = (
     return;
   }
 
-  jwt.verify(
-    token,
-    "ToxCb8KHc6ASeVAKjVmMCzt7MZnr9UiT",
-    async (err, payload) => {
-      if (err) {
-        res.status(403).send("invaild token");
-        return;
-      }
-
-      if (!payload) {
-        res.status(403).send("invaild token payload");
-        return;
-      }
-
-      const userPayload = payload as {
-        email: string;
-        firstName: string;
-        lastName: string;
-      };
-
-      const user = await userModel.findOne({ email: userPayload.email });
-
-      req.user = user;
-      next();
+  jwt.verify(token, process.env.JWT_SECRET_KEY || "", async (err, payload) => {
+    if (err) {
+      res.status(403).send("invaild token");
+      return;
     }
-  );
+
+    if (!payload) {
+      res.status(403).send("invaild token payload");
+      return;
+    }
+
+    const userPayload = payload as {
+      email: string;
+      firstName: string;
+      lastName: string;
+    };
+
+    const user = await userModel.findOne({ email: userPayload.email });
+
+    req.user = user;
+    next();
+  });
 };

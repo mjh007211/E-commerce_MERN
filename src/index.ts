@@ -5,13 +5,15 @@ import { seedInitialPorducts } from "./services/productServices";
 import productRouters from "./routes/productRouters";
 import cartRouters from "./routes/cartRouters";
 
+require("dotenv").config();
+
 const app = express();
 const port = 3001;
 
 app.use(express.json());
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/ecommerce")
+  .connect(process.env.DATABASE_URL || "")
   .then(() => console.log("conncting to e-commerce DB!"))
   .catch((err) => console.log(`faild to connect! ${err}`));
 
