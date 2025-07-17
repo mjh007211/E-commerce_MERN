@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
       email,
       password,
     });
-    res.status(statusCode).send(data);
+    res.status(statusCode).json(data);
   } catch {
     res.status(500).send("something went wrong");
   }
@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
       email,
       password,
     });
-    res.status(statusCode).send(data);
+    res.status(statusCode).json(data);
   } catch {
     res.status(500).send("something went wrong");
   }
