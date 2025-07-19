@@ -1,8 +1,10 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import { DATABASE_URL } from "../constants/constants";
+import { useAuth } from "../context/auth/AuthenticationContext";
 
 export const RegistrationPage = () => {
+  const { login } = useAuth();
   const [error, setError] = useState(false);
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
@@ -14,6 +16,10 @@ export const RegistrationPage = () => {
     const lastName = lastNameRef.current?.value;
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
+
+    if (!firstName || !lastName || !email || !password) {
+      return;
+    }
 
     const response = await fetch(`${DATABASE_URL}/user/register`, {
       method: "POST",
@@ -32,8 +38,13 @@ export const RegistrationPage = () => {
       setError(true);
     }
 
-    const data = await response.json();
-    console.log(data);
+    const token = await response.json();
+
+    if (!token) {
+      return;
+    }
+
+    login(email, token);
   };
   return (
     <Container
