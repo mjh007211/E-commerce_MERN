@@ -12,8 +12,12 @@ export const AuthenticationProvider: FC<PropsWithChildren> = ({ children }) => {
     localStorage.setItem("token", token);
   };
 
+  const isAuthenticated = !!token;
+
   return (
-    <AuthenticationContext.Provider value={{ username, token, login }}>
+    <AuthenticationContext.Provider
+      value={{ username, token, login, isAuthenticated }}
+    >
       {children}
     </AuthenticationContext.Provider>
   );
