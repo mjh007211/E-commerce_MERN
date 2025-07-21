@@ -10,12 +10,13 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useAuth } from "../context/auth/AuthenticationContext";
-import { Button, Grid } from "@mui/material";
+import { Badge, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export const NavBar = () => {
-  const { username, isAuthenticated } = useAuth();
+  const { username, isAuthenticated, logout } = useAuth();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -31,6 +32,16 @@ export const NavBar = () => {
 
   const handleLogin = () => {
     navigator("/login");
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigator("/");
+    handleCloseUserMenu();
+  };
+
+  const handleCart = () => {
+    navigator("/cart");
   };
 
   return (
@@ -63,7 +74,17 @@ export const NavBar = () => {
                 Tech Hub
               </Typography>
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              gap={4}
+            >
+              <IconButton aria-label="cart" onClick={handleCart}>
+                <Badge badgeContent={4} color="secondary">
+                  <ShoppingCartIcon sx={{ color: "#ffffff" }} />
+                </Badge>
+              </IconButton>
               {isAuthenticated ? (
                 <>
                   <Tooltip title="Open settings">
@@ -103,7 +124,7 @@ export const NavBar = () => {
                         My Orders
                       </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleCloseUserMenu}>
+                    <MenuItem onClick={handleLogout}>
                       <Typography sx={{ textAlign: "center" }}>
                         Log Out
                       </Typography>

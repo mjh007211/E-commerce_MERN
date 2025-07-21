@@ -18,7 +18,7 @@ export const LoginPage = () => {
       return;
     }
 
-    const response = await fetch(`${DATABASE_URL}/user/register`, {
+    const response = await fetch(`${DATABASE_URL}/user/login`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -30,7 +30,8 @@ export const LoginPage = () => {
     });
 
     if (!response.ok) {
-      setError(true);
+      console.log("something went wrong");
+      return;
     }
 
     const token = await response.json();
