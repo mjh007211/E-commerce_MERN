@@ -1,13 +1,54 @@
 import { useState, type FC, type PropsWithChildren } from "react";
 import { CartContext } from "./CartContext";
 import type { CartItems } from "../../type/Cart";
+import { DATABASE_URL } from "../../constants/constants";
+import { useAuth } from "../auth/AuthenticationContext";
 
 export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItems>([]);
+  const { token } = useAuth();
+  const [cartItems, setCartItems] = useState<CartItems[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [error, setError] = useState("");
 
-  const addItemToCart = (productID: string) => {
-    console.log(productID);
+  const addItemToCart = async (productID: string) => {
+    try {
+      const response = await fetch(`${DATABASE_URL}/cart/items`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productID,
+          productQuantity: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        setError("something went wrong");
+        return;
+      }
+
+      const cart = await response.json();
+
+      if (!cart) {
+        setError("something went wrong");
+      }
+
+      const cartItemsMapped = cart.items.map(
+        ({ product, productQuantity }) => ({
+          productID: product._id,
+          title: product.title,
+          image: product.image,
+          productQuantity,
+          productPrice: product.productPrice,
+        })
+      );
+      setCartItems([...cartItemsMapped]);
+      setTotalAmount(cart.totalAmount);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
