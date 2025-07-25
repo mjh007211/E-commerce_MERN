@@ -1,4 +1,4 @@
-import { useState, type FC, type PropsWithChildren } from "react";
+import { useEffect, useState, type FC, type PropsWithChildren } from "react";
 import { CartContext } from "./CartContext";
 import type { CartItems } from "../../type/Cart";
 import { DATABASE_URL } from "../../constants/constants";
@@ -9,6 +9,41 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItems[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    const fetchCart = async () => {
+      const response = await fetch(`${DATABASE_URL}/cart`, {
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        setError("something went wrong fetching the data.");
+        return;
+      }
+
+      const cart = await response.json();
+
+      const cartItemsMapped = cart.items.map(
+        ({ product, productQuantity }) => ({
+          productID: product._id,
+          title: product.title,
+          image: product.image,
+          productQuantity,
+          productPrice: product.price,
+        })
+      );
+
+      setCartItems(cartItemsMapped);
+      setTotalAmount(cart.totalAmount);
+    };
+
+    fetchCart();
+  }, [token]);
 
   const addItemToCart = async (productID: string) => {
     try {
@@ -41,7 +76,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
           title: product.title,
           image: product.image,
           productQuantity,
-          productPrice: product.productPrice,
+          productPrice: product.price,
         })
       );
       setCartItems([...cartItemsMapped]);
