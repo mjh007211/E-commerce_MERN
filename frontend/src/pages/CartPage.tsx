@@ -4,7 +4,19 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 
 export const CartPage = () => {
-  const { cartItems, totalAmount } = useCart();
+  const { cartItems, totalAmount, updateItemInCart, deleteItemInCart } =
+    useCart();
+
+  const handleUpdateQuantity = (productID: string, productQuantity: number) => {
+    if (productQuantity <= 0) {
+      return;
+    }
+    updateItemInCart(productID, productQuantity);
+  };
+
+  const handleDeleteItemInCart = (productID: string) => {
+    deleteItemInCart(productID);
+  };
 
   return (
     <Container sx={{ mt: 2 }}>
@@ -29,17 +41,33 @@ export const CartPage = () => {
                 <Typography>
                   {item.productQuantity} X {item.productPrice} SR
                 </Typography>
-                <Button>Delete Item</Button>
+                <Button onClick={() => handleDeleteItemInCart(item.productID)}>
+                  Delete Item
+                </Button>
               </Box>
             </Box>
             <ButtonGroup variant="contained" aria-label="Basic button group">
-              <Button>+</Button>
-              <Button>-</Button>
+              <Button
+                onClick={() =>
+                  handleUpdateQuantity(item.productID, item.productQuantity + 1)
+                }
+              >
+                +
+              </Button>
+              <Button
+                onClick={() =>
+                  handleUpdateQuantity(item.productID, item.productQuantity - 1)
+                }
+              >
+                -
+              </Button>
             </ButtonGroup>
           </Box>
         ))}
       </Box>
-      <Typography mt={2}>Total Amount: {totalAmount.toFixed(2)} SR</Typography>
+      <Typography variant="h4" mt={2}>
+        Total Amount: {totalAmount.toFixed(2)} SR
+      </Typography>
     </Container>
   );
 };

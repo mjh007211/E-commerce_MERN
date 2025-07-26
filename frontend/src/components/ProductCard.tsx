@@ -18,7 +18,7 @@ export const ProductCard = ({ _id, title, image, price }: Props) => {
   const { addItemToCart } = useCart();
   return (
     <Card>
-      <CardMedia sx={{ height: 200 }} image={image} title={title} />
+      <CardMedia sx={{ height: 200, }} image={image} title={title}  />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {title}

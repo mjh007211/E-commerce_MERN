@@ -86,8 +86,96 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const updateItemInCart = async (
+    productID: string,
+    productQuantity: number
+  ) => {
+    try {
+      const response = await fetch(`${DATABASE_URL}/cart/items`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productID,
+          productQuantity,
+        }),
+      });
+
+      if (!response.ok) {
+        setError("something went wrong");
+        return;
+      }
+
+      const cart = await response.json();
+
+      if (!cart) {
+        setError("something went wrong");
+      }
+
+      const cartItemsMapped = cart.items.map(
+        ({ product, productQuantity }) => ({
+          productID: product._id,
+          title: product.title,
+          image: product.image,
+          productQuantity,
+          productPrice: product.price,
+        })
+      );
+      setCartItems([...cartItemsMapped]);
+      setTotalAmount(cart.totalAmount);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteItemInCart = async (productID: string) => {
+    try {
+      const response = await fetch(`${DATABASE_URL}/cart/items/${productID}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        setError("something went wrong");
+        return;
+      }
+
+      const cart = await response.json();
+
+      if (!cart) {
+        setError("something went wrong");
+      }
+
+      const cartItemsMapped = cart.items.map(
+        ({ product, productQuantity }) => ({
+          productID: product._id,
+          title: product.title,
+          image: product.image,
+          productQuantity,
+          productPrice: product.price,
+        })
+      );
+      setCartItems([...cartItemsMapped]);
+      setTotalAmount(cart.totalAmount);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems, totalAmount, addItemToCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        totalAmount,
+        addItemToCart,
+        updateItemInCart,
+        deleteItemInCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
