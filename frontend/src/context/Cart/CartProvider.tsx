@@ -166,6 +166,33 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const clearCart = async () => {
+    try {
+      const response = await fetch(`${DATABASE_URL}/cart`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        setError("something went wrong");
+        return;
+      }
+
+      const cart = await response.json();
+
+      if (!cart) {
+        setError("something went wrong");
+      }
+
+      setCartItems([]);
+      setTotalAmount(0);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -174,6 +201,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         addItemToCart,
         updateItemInCart,
         deleteItemInCart,
+        clearCart,
       }}
     >
       {children}
