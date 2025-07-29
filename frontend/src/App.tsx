@@ -4,6 +4,7 @@ import {
   CheckOutPage,
   HomePage,
   LoginPage,
+  MyOrdersPage,
   OrderSuccessPage,
   RegistrationPage,
 } from "./pages";
@@ -28,6 +29,7 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckOutPage />} />
               <Route path="/order-success" element={<OrderSuccessPage />} />
+              <Route path="/my-orders" element={<MyOrdersPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

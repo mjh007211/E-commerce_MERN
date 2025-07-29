@@ -46,6 +46,11 @@ export const NavBar = () => {
     navigator("/cart");
   };
 
+  const handleMyOrders = () => {
+    navigator("/my-orders");
+    handleCloseUserMenu();
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -127,7 +132,7 @@ export const NavBar = () => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    <MenuItem onClick={handleCloseUserMenu}>
+                    <MenuItem onClick={handleMyOrders}>
                       <Typography sx={{ textAlign: "center" }}>
                         My Orders
                       </Typography>
