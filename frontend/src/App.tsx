@@ -4,6 +4,7 @@ import {
   CheckOutPage,
   HomePage,
   LoginPage,
+  OrderSuccessPage,
   RegistrationPage,
 } from "./pages";
 import { NavBar } from "./components/NavBar";
@@ -26,6 +27,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckOutPage />} />
+              <Route path="/order-success" element={<OrderSuccessPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
