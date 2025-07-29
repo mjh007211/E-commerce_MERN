@@ -1,5 +1,11 @@
 // import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { CartPage, HomePage, LoginPage, RegistrationPage } from "./pages";
+import {
+  CartPage,
+  CheckOutPage,
+  HomePage,
+  LoginPage,
+  RegistrationPage,
+} from "./pages";
 import { NavBar } from "./components/NavBar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthenticationProvider } from "./context/auth/AuthenticationProvider";
@@ -19,6 +25,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckOutPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
